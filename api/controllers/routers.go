@@ -11,7 +11,11 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/get_barang", middlewares.SetMiddlewareJSON(s.GetItemProcurments)).Methods("GET") //-!- ?q={param}&id_provinsi={id} -!-//
 	s.Router.HandleFunc("/seg_analisa_types", middlewares.SetMiddlewareJSON(s.GetSegAnalisaTypes)).Methods("GET")
 
+	s.Router.HandleFunc("/analisa_value_enginering", middlewares.SetMiddlewareJSON(s.SegAnalisaValueEngineringAll)).Methods("GET")
 	s.Router.HandleFunc("/analisa_method", middlewares.SetMiddlewareJSON(s.SegAnalisaMethodAll)).Methods("GET")
+	s.Router.HandleFunc("/analisa_inovasi", middlewares.SetMiddlewareJSON(s.SegAnalisaInovasiAll)).Methods("GET")
+	s.Router.HandleFunc("/analisa_finance_enginering", middlewares.SetMiddlewareJSON(s.SegAnalisaFinanceEngineringAll)).Methods("GET")
+
 	s.Router.HandleFunc("/analisa_method", middlewares.SetMiddlewareJSON(s.SegAnalisaMethodInsert)).Methods("POST")
 
 	s.Router.HandleFunc("/analisa_method/{id}", middlewares.SetMiddlewareJSON(s.SegAnalisaMethodSingle)).Methods("GET")
