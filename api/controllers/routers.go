@@ -23,4 +23,7 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/analisa_method_delete/{id}", middlewares.SetMiddlewareJSON(s.SegAnalisaMethodDelete)).Methods("POST")
 	s.Router.HandleFunc("/analisa_method_detail_delete/{id}", middlewares.SetMiddlewareJSON(s.SegAnalisaMethodDetailDelete)).Methods("POST")
 	s.Router.HandleFunc("/analisa_method_exception_delete/{id}", middlewares.SetMiddlewareJSON(s.SegAnalisaMethodExceptionDelete)).Methods("POST")
+
+	s.Router.HandleFunc("/analisa_inovasi_delete/{id}", middlewares.SetMiddlewareJSON(s.SegAnalisaInovasiDelete)).Methods("POST")
+
 }
