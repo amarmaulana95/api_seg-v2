@@ -7,6 +7,7 @@ import (
 
 	"github.com/amarmaulana95/api_seg-v2/api/models"
 	"github.com/amarmaulana95/api_seg-v2/api/responses"
+	"github.com/gorilla/mux"
 )
 
 func (server *Server) SegAnalisaValueEngineringAll(w http.ResponseWriter, r *http.Request) {
@@ -153,4 +154,50 @@ func (server *Server) SegAnalisaValueEngineringAll(w http.ResponseWriter, r *htt
 	responData = ResponStatusDataView{uint32(page), uint32(limit), uint32(total_pages), uint32(dsemethodTotal), arrResponAnalisa}
 
 	responses.JSON(w, http.StatusOK, responData)
+}
+
+func (server *Server) SegAnalisaValueEngineringDelete(w http.ResponseWriter, r *http.Request) {
+	if (*r).Method == "OPTIONS" {
+		return
+	}
+
+	vars := mux.Vars(r)
+
+	samethodattach := models.SegAnalisaMethodAttachment{}
+	samethoddet := models.SegAnalisaMethodDetail{}
+	samethodexcp := models.SegAnalisaMethodException{}
+	semethod := models.SegAnalisaMethod{}
+
+	uid, err := strconv.ParseUint(vars["id"], 10, 32)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+
+	_, err = samethodattach.DeleteSegAnalisaMethodAttachmentByAnalisa(server.DB, uint32(uid))
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	_, err = samethoddet.DeleteSegAnalisaMethodDetailByIdAnalisa(server.DB, uint32(uid))
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	_, err = samethodexcp.DeleteSegAnalisaMethodExceptionByIdAnalisa(server.DB, uint32(uid))
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	_, err = semethod.DeleteSegAnalisaMethod(server.DB, uint32(uid))
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	w.Header().Set("Entity", fmt.Sprintf("%d", uid))
+	responses.JSON(w, http.StatusNoContent, "")
 }
