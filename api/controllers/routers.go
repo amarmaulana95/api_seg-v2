@@ -25,7 +25,19 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/analisa_method_exception_delete/{id}", middlewares.SetMiddlewareJSON(s.SegAnalisaMethodExceptionDelete)).Methods("POST")
 
 	s.Router.HandleFunc("/analisa_inovasi_delete/{id}", middlewares.SetMiddlewareJSON(s.SegAnalisaInovasiDelete)).Methods("POST")
+
+	//----------------------------------------------VALUE ENGINEERING------------------------------------------------------------//
+	s.Router.HandleFunc("/analisa_value_enginering_update/{id}", middlewares.SetMiddlewareJSON(s.SegAnalisaValueEngineringUpdate)).Methods("POST")
 	s.Router.HandleFunc("/analisa_value_enginering_delete/{id}", middlewares.SetMiddlewareJSON(s.SegAnalisaValueEngineringDelete)).Methods("POST")
+	s.Router.HandleFunc("/analisa_value_enginering_attachment_delete/{id}", middlewares.SetMiddlewareJSON(s.SegAnalisaValueEngineringAttachmentDelete)).Methods("POST")
+	s.Router.HandleFunc("/analisa_value_enginering_detail_delete/{id}", middlewares.SetMiddlewareJSON(s.SegAnalisaValueEngineringDetailDelete)).Methods("POST")
+	s.Router.HandleFunc("/analisa_value_enginering_exception_delete/{id}", middlewares.SetMiddlewareJSON(s.SegAnalisaValueEngineringExceptionDelete)).Methods("POST")
+
+	//------------------------------------FINANCE ENGINEERING---------------------------------------------------------------------------------------//
+	s.Router.HandleFunc("/analisa_finance_enginering_update/{id}", middlewares.SetMiddlewareJSON(s.SegAnalisaFinanceEngineringUpdate)).Methods("POST")
 	s.Router.HandleFunc("/analisa_finance_enginering_delete/{id}", middlewares.SetMiddlewareJSON(s.SegAnalisaFinanceEngineringDelete)).Methods("POST")
+	s.Router.HandleFunc("/analisa_finance_enginering_attachment_delete/{id}", middlewares.SetMiddlewareJSON(s.SegAnalisaFinanceEngineringAttachmentDelete)).Methods("POST")
+	s.Router.HandleFunc("/analisa_finance_enginering_detail_delete/{id}", middlewares.SetMiddlewareJSON(s.SegAnalisaFinanceEngineringDetailDelete)).Methods("POST")
+	s.Router.HandleFunc("/analisa_finance_enginering_exception_delete/{id}", middlewares.SetMiddlewareJSON(s.SegAnalisaFinanceEngineringExceptionDelete)).Methods("POST")
 
 }
