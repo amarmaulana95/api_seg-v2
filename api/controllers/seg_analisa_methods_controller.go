@@ -537,3 +537,21 @@ func (server *Server) SegAnalisaMethodExceptionDelete(w http.ResponseWriter, r *
 	w.Header().Set("Entity", fmt.Sprintf("%d", uid))
 	responses.JSON(w, http.StatusNoContent, "")
 }
+
+func (server *Server) GetSegDashboardEficiency(w http.ResponseWriter, r *http.Request) {
+
+	semethod := models.DashboardAnalisaEficiency{}
+
+	dsemethod, err := semethod.FindDashboardAnalisaEficiencyByID(server.DB)
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	dEfi := DashEfi{}
+	dEfi.Data_a[0] = dsemethod.Percent_eficiency
+	dEfi.Data_a[1] = 100 - dsemethod.Percent_eficiency
+	dEfi.Persen = fmt.Sprintf("%.2f%%", dsemethod.Percent_eficiency)
+
+	responses.JSON(w, http.StatusOK, dEfi)
+}

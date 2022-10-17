@@ -40,4 +40,6 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/analisa_finance_enginering_detail_delete/{id}", middlewares.SetMiddlewareJSON(s.SegAnalisaFinanceEngineringDetailDelete)).Methods("POST")
 	s.Router.HandleFunc("/analisa_finance_enginering_exception_delete/{id}", middlewares.SetMiddlewareJSON(s.SegAnalisaFinanceEngineringExceptionDelete)).Methods("POST")
 
+	//-------------------------------------------DASHBOARD----------------------------------------------------------------------------------------//
+	s.Router.HandleFunc("/dashboard_total_eficiency", middlewares.SetMiddlewareJSON(s.GetSegDashboardEficiency)).Methods("GET")
 }
