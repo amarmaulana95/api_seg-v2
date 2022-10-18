@@ -42,4 +42,5 @@ func (s *Server) initializeRoutes() {
 
 	//-------------------------------------------DASHBOARD----------------------------------------------------------------------------------------//
 	s.Router.HandleFunc("/dashboard_total_eficiency", middlewares.SetMiddlewareJSON(s.GetSegDashboardEficiency)).Methods("GET")
+	s.Router.HandleFunc("/dashboard_total_bulanan_analisa", middlewares.SetMiddlewareJSON(s.GetSegDashboardTotalBulananAnalisa)).Methods("GET")
 }
