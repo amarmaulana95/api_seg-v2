@@ -10,6 +10,9 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/get_analisa_exception", middlewares.SetMiddlewareJSON(s.GetSegAnalisaException)).Methods("GET")
 	s.Router.HandleFunc("/get_barang", middlewares.SetMiddlewareJSON(s.GetItemProcurments)).Methods("GET") //-!- ?q={param}&id_provinsi={id} -!-//
 	s.Router.HandleFunc("/seg_analisa_types", middlewares.SetMiddlewareJSON(s.GetSegAnalisaTypes)).Methods("GET")
+	s.Router.HandleFunc("/seg_analisa_types/{id}", middlewares.SetMiddlewareJSON(s.GetSegAnalisaType)).Methods("GET")
+	s.Router.HandleFunc("/seg_analisa_types/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareJSON(s.UpdateSegAnalisaType))).Methods("PUT")
+	s.Router.HandleFunc("/seg_analisa_types/{id}", middlewares.SetMiddlewareJSON(s.DeleteSegAnalisaType)).Methods("DELETE")
 
 	s.Router.HandleFunc("/analisa_value_enginering", middlewares.SetMiddlewareJSON(s.SegAnalisaValueEngineringAll)).Methods("GET")
 	s.Router.HandleFunc("/analisa_method", middlewares.SetMiddlewareJSON(s.SegAnalisaMethodAll)).Methods("GET")
