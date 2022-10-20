@@ -17,6 +17,211 @@ import (
 	"github.com/gorilla/mux"
 )
 
+func (server *Server) SegAnalisaFinanceEngineringInsert(w http.ResponseWriter, r *http.Request) {
+	if (*r).Method == "OPTIONS" {
+		return
+	}
+
+	err := r.ParseMultipartForm(200000)
+    if err != nil {
+        fmt.Println("error parsing multiplepart form", err)
+        return
+    }
+
+	r.ParseForm() 
+
+	/*location, err := strconv.Atoi(r.FormValue("location"))
+    if err != nil {
+		responses.ERROR(w, http.StatusBadGateway, err)
+    }*/
+
+    p_status_proyek_boost := r.FormValue("status_proyek_boost")
+
+    if p_status_proyek_boost == "" { 
+		p_status_proyek_boost = "0"
+	}
+
+	project_boost, err := strconv.Atoi(p_status_proyek_boost)
+    if err != nil {
+		responses.ERROR(w, http.StatusBadGateway, err)
+    }
+
+	name := r.FormValue("name")
+	description := r.FormValue("description")
+	status_proyek_boost := uint32(project_boost)
+
+	dRatingElo := models.SegRatingElo{}
+
+	rSegAnalisaMethod := models.SegAnalisaMethod{}
+	rSegAnalisaMethod.Id_analisa_type = 4
+	rSegAnalisaMethod.Name = name
+	rSegAnalisaMethod.Description = description
+	rSegAnalisaMethod.Location = r.FormValue("location")
+	rSegAnalisaMethod.Status_proyek_boost = status_proyek_boost
+
+	_, err = rSegAnalisaMethod.SaveSegAnalisaMethod(server.DB)
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	id_data := rSegAnalisaMethod.Id
+
+	formdata := r.MultipartForm // ok, no problem so far, read the Form data
+
+ 	//get the *fileheaders
+ 	files := formdata.File["analisa_file"] // grab the filenames
+
+ 	for i, _ := range files { // loop through the files one by one
+		rSegAnalisaMethodAttachment := models.SegAnalisaMethodAttachment{}
+
+ 		file, err := files[i].Open()
+ 		defer file.Close()
+ 		if err != nil {
+ 			fmt.Fprintln(w, err)
+ 			return
+ 		}
+
+ 		currenttime := time.Now()
+		hashFilename := md5.Sum([]byte(files[i].Filename+currenttime.String()))
+		encToString := hex.EncodeToString(hashFilename[:])
+		filename_new := fmt.Sprintf("%s%s", encToString, filepath.Ext(files[i].Filename))
+		pathfile := getDir() + filename_new
+
+		rSegAnalisaMethodAttachment.Id_analisa = id_data
+		rSegAnalisaMethodAttachment.File_name = filename_new
+		rSegAnalisaMethodAttachment.Path_file_name = pathfile
+
+ 		out, err := os.Create(pathfile)
+
+ 		defer out.Close()
+ 		if err != nil {
+ 			fmt.Fprintf(w, "Unable to create the file for writing. Check your write access privilege")
+ 			return
+ 		}
+
+ 		_, err = io.Copy(out, file) // file not files[i] !
+ 		if err != nil {
+ 			fmt.Fprintln(w, err)
+ 			return
+ 		}
+
+ 		_, err = rSegAnalisaMethodAttachment.SaveSegAnalisaMethodAttachment(server.DB)
+		if err != nil {
+			responses.ERROR(w, http.StatusInternalServerError, err)
+			return
+		}
+ 	}
+	// file_name => file1;file2;file3
+
+	id_barang_data := strings.Split(r.FormValue("id_barang"), ";") // => 1002;983;756
+	eficiency_data := strings.Split(r.FormValue("eficiency"), ";") // => 0.76;0,25;0,0043
+	analisa_exception_label_data := strings.Split(r.FormValue("analisa_exception_label"), ";")
+	eficiency_type_data := strings.Split(r.FormValue("eficiency_type"), ";")
+	price_data := strings.Split(r.FormValue("price"), ";")
+
+	for i, _ := range id_barang_data { // loop through the files one by one
+
+		rSegAnalisaMethodDetail := models.SegAnalisaMethodDetail{}
+
+		eficiency, err := strconv.ParseFloat(eficiency_data[i], 32)
+	    if err != nil {
+			responses.ERROR(w, http.StatusBadGateway, err)
+	    }
+
+	    eficiency_type, err := strconv.Atoi(eficiency_type_data[i])
+	    if err != nil {
+			responses.ERROR(w, http.StatusBadGateway, err)
+	    }
+
+	    price, err := strconv.ParseFloat(price_data[i], 32)
+	    if err != nil {
+			responses.ERROR(w, http.StatusBadGateway, err)
+	    }
+
+	    rSegAnalisaMethodDetail.Id_analisa = id_data
+		rSegAnalisaMethodDetail.Id_barang = id_barang_data[i]
+		rSegAnalisaMethodDetail.Eficiency = float32(eficiency)
+		rSegAnalisaMethodDetail.Barang = analisa_exception_label_data[i]
+		rSegAnalisaMethodDetail.Eficiency_type = uint32(eficiency_type)
+		rSegAnalisaMethodDetail.Price = float32(price)
+
+
+		_, err = rSegAnalisaMethodDetail.SaveSegAnalisaMethodDetail(server.DB)
+		if err != nil {
+			responses.ERROR(w, http.StatusInternalServerError, err)
+			return
+		}
+
+		dIdDetail := rSegAnalisaMethodDetail.Id
+		dId_barang := rSegAnalisaMethodDetail.Id_barang
+	    if (dId_barang == "0") {
+	    	dId_barang = fmt.Sprintf("00-%d", dIdDetail)
+	    }
+
+		dRatingElo = models.SegRatingElo{}
+
+		dRatingElo.Id_analisa_type = 4
+		dRatingElo.Id_analisa = id_data
+		dRatingElo.Id_barang = dId_barang
+		dRatingElo.Koefisien = rSegAnalisaMethodDetail.Eficiency
+		dRatingElo.Rating = float32(rSegAnalisaMethodDetail.Eficiency) * float32(1000)
+
+		_, err = dRatingElo.SaveSegRatingElo(server.DB)
+		if err != nil {
+			responses.ERROR(w, http.StatusInternalServerError, err)
+			return
+		}
+ 	}
+
+ 	p_analisa_type := r.FormValue("analisa_type")
+
+    if p_analisa_type == "" { 
+		p_analisa_type = "0"
+	}
+
+ 	p_id_analisa_exception := r.FormValue("id_analisa_exception")
+
+    if p_id_analisa_exception == "" { 
+		p_id_analisa_exception = "0"
+	}
+
+	analisa_type_data := strings.Split(p_analisa_type, ";") 
+	id_analisa_exception_data := strings.Split(p_id_analisa_exception, ";") 
+	label_type_data := strings.Split(r.FormValue("label_type"), ";")
+	label_exception_data := strings.Split(r.FormValue("label_exception"), ";")
+
+	for i, _ := range id_analisa_exception_data { // loop through the files one by one
+
+		rSegAnalisaMethodException := models.SegAnalisaMethodException{}
+
+		analisa_type, err := strconv.Atoi(analisa_type_data[i])
+	    if err != nil {
+			responses.ERROR(w, http.StatusBadGateway, err)
+	    }
+
+		id_analisa_exception, err := strconv.Atoi(id_analisa_exception_data[i])
+	    if err != nil {
+			responses.ERROR(w, http.StatusBadGateway, err)
+	    }
+
+	    rSegAnalisaMethodException.Id_analisa = id_data
+		rSegAnalisaMethodException.Analisa_type = uint32(analisa_type)
+		rSegAnalisaMethodException.Id_analisa_exception = uint32(id_analisa_exception)
+		rSegAnalisaMethodException.Label_type = label_type_data[i]
+		rSegAnalisaMethodException.Label_exception = label_exception_data[i]
+
+		_, err = rSegAnalisaMethodException.SaveSegAnalisaMethodException(server.DB)
+		if err != nil {
+			responses.ERROR(w, http.StatusInternalServerError, err)
+			return
+		}
+ 	}
+
+ 	respon := &ResponStatusData{200,"Berhasil", rSegAnalisaMethod}
+	responses.JSON(w, http.StatusOK, respon)
+}
+
 func (server *Server) SegAnalisaFinanceEngineringAll(w http.ResponseWriter, r *http.Request) {
 	if (*r).Method == "OPTIONS" {
 		return

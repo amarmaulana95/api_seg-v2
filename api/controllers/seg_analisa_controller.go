@@ -47,3 +47,16 @@ func (server *Server) GetSegDashboardTotalBulananAnalisa(w http.ResponseWriter, 
 	}
 	responses.JSON(w, http.StatusOK, dsemethod)
 }
+
+func (server *Server) GetSegDashboardTotalAnalisa(w http.ResponseWriter, r *http.Request) {
+
+	semethod := models.DashboardAnalisaTotal{}
+
+	dsemethod, err := semethod.FindAllDashboardAnalisaTotals(server.DB)
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+	responses.JSON(w, http.StatusOK, dsemethod)
+}
+
