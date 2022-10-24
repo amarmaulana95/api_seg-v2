@@ -28,7 +28,9 @@ func (server *Server) GetSegAnalisaTypes(w http.ResponseWriter, r *http.Request)
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
 	}
-	responses.JSON(w, http.StatusOK, dsetype)
+	// responses.JSON(w, http.StatusOK, dsetype)
+	respon := &ResponStatusData{200, "Success", dsetype}
+	responses.JSON(w, http.StatusOK, respon)
 }
 
 func (server *Server) GetSegAnalisaType(w http.ResponseWriter, r *http.Request) {
@@ -45,7 +47,9 @@ func (server *Server) GetSegAnalisaType(w http.ResponseWriter, r *http.Request) 
 		responses.ERROR(w, http.StatusBadRequest, err)
 		return
 	}
-	responses.JSON(w, http.StatusOK, setypeGotten)
+	respon := &ResponStatusData{200, "Success", setypeGotten}
+	responses.JSON(w, http.StatusOK, respon)
+	// responses.JSON(w, http.StatusOK, setypeGotten)
 }
 
 func (server *Server) UpdateSegAnalisaType(w http.ResponseWriter, r *http.Request) {
@@ -114,4 +118,29 @@ func (server *Server) DeleteSegAnalisaType(w http.ResponseWriter, r *http.Reques
 	}
 	w.Header().Set("Entity", fmt.Sprintf("%d", uid))
 	responses.JSON(w, http.StatusNoContent, "")
+}
+
+func (server *Server) CreateSegAnalisaType(w http.ResponseWriter, r *http.Request) {
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+	}
+	setype := models.SegAnalisaType{}
+	err = json.Unmarshal(body, &setype)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+	setype.Prepare()
+
+	setypeCreated, err := setype.SaveSegAnalisaType(server.DB)
+
+	if err != nil {
+		formattedError := formaterror.FormatError(err.Error())
+		responses.ERROR(w, http.StatusInternalServerError, formattedError)
+		return
+	}
+	w.Header().Set("Location", fmt.Sprintf("%s%s/%d", r.Host, r.RequestURI, setypeCreated.Id))
+	responses.JSON(w, http.StatusCreated, setypeCreated)
 }

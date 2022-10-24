@@ -9,10 +9,10 @@ import (
 )
 
 type SegAnalisaType struct {
-	Id          uint32 `gorm:"primary_key;auto_increment" json:"id"`
+	Id          int8   `gorm:"primary_key;auto_increment" json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
-	Urutan      uint32 `json:"urutan"`
+	Urutan      int8   `json:"urutan"`
 }
 
 func (satype *SegAnalisaType) Prepare() {

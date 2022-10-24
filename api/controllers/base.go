@@ -122,15 +122,15 @@ type ArrDataException struct {
 }
 
 type ResponStatus struct {
-	Status  uint32
-	Message string
-	Data    interface{}
+	Status  uint32      `json:"status"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
 }
 
 type ResponStatusData struct {
-	Status  uint32
-	Message string
-	Data    interface{}
+	Status  uint32      `json:"status"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
 }
 
 type ResponStatusDataView struct {

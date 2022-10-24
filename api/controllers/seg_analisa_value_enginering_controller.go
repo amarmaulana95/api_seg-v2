@@ -3,6 +3,7 @@ package controllers
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -279,9 +280,9 @@ func (server *Server) SegAnalisaValueEngineringDetailDelete(w http.ResponseWrite
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
 	}
-
-	w.Header().Set("Entity", fmt.Sprintf("%d", uid))
-	responses.JSON(w, http.StatusNoContent, "")
+	// w.Header().Set("Entity", fmt.Sprintf("%d", uid))
+	res := map[string]string{"message": " Delete Success"}
+	json.NewEncoder(w).Encode(res)
 }
 
 func (server *Server) SegAnalisaValueEngineringUpdate(w http.ResponseWriter, r *http.Request) {
