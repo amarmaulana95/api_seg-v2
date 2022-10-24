@@ -5,6 +5,17 @@ import "github.com/amarmaulana95/api_seg-v2/api/middlewares"
 func (s *Server) initializeRoutes() {
 
 	s.Router.HandleFunc("/", middlewares.SetMiddlewareJSON(s.Home)).Methods("GET")
+
+	// Login Route
+	s.Router.HandleFunc("/login", middlewares.SetMiddlewareJSON(s.Login)).Methods("POST")
+
+	//Users routes
+	s.Router.HandleFunc("/users", middlewares.SetMiddlewareJSON(s.CreateUser)).Methods("POST")
+	// s.Router.HandleFunc("/users", middlewares.SetMiddlewareJSON(s.GetUsers)).Methods("GET")
+	s.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareJSON(s.GetUser)).Methods("GET")
+	s.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareJSON(s.UpdateUser))).Methods("PUT")
+	s.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareJSON(s.DeleteUser)).Methods("DELETE")
+
 	s.Router.HandleFunc("/lokasi", middlewares.SetMiddlewareJSON(s.GetLokasis)).Methods("GET")
 	s.Router.HandleFunc("/lokasi/{prop_id}", middlewares.SetMiddlewareJSON(s.GetLokasi)).Methods("GET")
 	s.Router.HandleFunc("/get_analisa_exception", middlewares.SetMiddlewareJSON(s.GetSegAnalisaException)).Methods("GET")
