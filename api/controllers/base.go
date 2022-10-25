@@ -71,8 +71,14 @@ func (server *Server) Run(addr string) {
 // 	return (err != nil)
 // }
 
-type TokenResult struct {
-	Token_seg string `json:"token_seg"`
+type Token struct {
+	Email    string `json:"email"`
+	Username string `json:"username"`
+	Meta     MyData `json:"meta"`
+}
+
+type MyData struct {
+	Tokens string `json:"token"`
 }
 
 type DashEfi struct {

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -38,13 +39,13 @@ func (server *Server) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// respon := &ResponStatusData{200, "Berhasil", token}
-	// responses.JSON(w, http.StatusOK, respon)
+	var response Token
+	response.Username = user.Username
+	response.Email = user.Email
+	response.Meta.Tokens = token
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 
-	res := map[string]string{"token": token}
-	json.NewEncoder(w).Encode(res)
-
-	// responses.JSON(w, http.StatusOK, token)
 }
 
 func (server *Server) SignIn(email, password string) (string, error) {
@@ -61,29 +62,22 @@ func (server *Server) SignIn(email, password string) (string, error) {
 	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
 		return "", err
 	}
-	return auth.CreateToken(user.ID)
+	fmt.Println(user.Username)
+	return auth.CreateToken(user.ID, user.Username, user.Email)
 }
 
-func (server *Server) ValidasiToken(w http.ResponseWriter, r *http.Request) {
-
-	var err error
-
-	r.ParseForm()
-
-	token := r.Header.Get("token")
-
-	utok := models.UserToken{}
-
-	utokGotten, err := utok.FindUserTokenByID(server.DB, token)
-	if err != nil {
-		responses.ERROR(w, http.StatusBadRequest, err)
-		return
-	}
-
-	token_result, err := auth.CreateToken(utokGotten.User_id)
-
-	tokres := TokenResult{}
-	tokres.Token_seg = token_result
-
-	responses.JSON(w, http.StatusOK, tokres)
-}
+// func (server *Server) ValidasiToken(w http.ResponseWriter, r *http.Request) {
+// 	var err error
+// 	r.ParseForm()
+// 	token := r.Header.Get("token")
+// 	utok := models.UserToken{}
+// 	utokGotten, err := utok.FindUserTokenByID(server.DB, token)
+// 	if err != nil {
+// 		responses.ERROR(w, http.StatusBadRequest, err)
+// 		return
+// 	}
+// 	token_result, err := auth.CreateToken(utokGotten.User_id)
+// 	tokres := TokenResult{}
+// 	tokres.Token_seg = token_result
+// 	responses.JSON(w, http.StatusOK, tokres)
+// }
