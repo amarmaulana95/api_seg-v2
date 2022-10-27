@@ -45,7 +45,10 @@ func (server *Server) GetSegDashboardTotalBulananAnalisa(w http.ResponseWriter, 
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
 	}
-	responses.JSON(w, http.StatusOK, dsemethod)
+	respon := &ResponStatusData{200, "Success", dsemethod}
+	responses.JSON(w, http.StatusOK, respon)
+
+	// responses.JSON(w, http.StatusOK, dsemethod)
 }
 
 func (server *Server) GetSegDashboardTotalAnalisa(w http.ResponseWriter, r *http.Request) {
@@ -57,6 +60,6 @@ func (server *Server) GetSegDashboardTotalAnalisa(w http.ResponseWriter, r *http
 		responses.ERROR(w, http.StatusInternalServerError, err)
 		return
 	}
-	responses.JSON(w, http.StatusOK, dsemethod)
+	respon := &ResponStatusData{200, "Success", dsemethod}
+	responses.JSON(w, http.StatusOK, respon)
 }
-

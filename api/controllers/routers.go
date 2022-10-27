@@ -15,7 +15,6 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/users", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.GetUsers))).Methods("GET") // OK
 	s.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareAuthentication(s.GetUser)).Methods("GET")                            // PL
 	s.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdateUser))).Methods("POST")
-
 	s.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareAuthentication(s.DeleteUser)).Methods("POST")
 
 	// s.Router.HandleFunc("/register_token", middlewares.SetMiddlewareJSON(s.ValidasiToken)).Methods("GET")
@@ -25,8 +24,8 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/get_analisa_exception", middlewares.SetMiddlewareJSON(s.GetSegAnalisaException)).Methods("GET")
 	s.Router.HandleFunc("/get_barang", middlewares.SetMiddlewareJSON(s.GetItemProcurments)).Methods("GET") //-!- ?q={param}&id_provinsi={id} -!-//
 
-	s.Router.HandleFunc("/seg_analisa_types", middlewares.SetMiddlewareJSON(s.CreateSegAnalisaType)).Methods("POST")
-	s.Router.HandleFunc("/seg_analisa_types", middlewares.SetMiddlewareAuthentication(s.GetSegAnalisaTypes)).Methods("GET")
+	s.Router.HandleFunc("/seg_analisa_types", middlewares.SetMiddlewareAuthentication(s.CreateSegAnalisaType)).Methods("POST")
+	s.Router.HandleFunc("/seg_analisa_types", middlewares.SetMiddlewareJSON(s.GetSegAnalisaTypes)).Methods("GET")
 	s.Router.HandleFunc("/seg_analisa_types/{id}", middlewares.SetMiddlewareAuthentication(s.GetSegAnalisaType)).Methods("GET")
 	s.Router.HandleFunc("/seg_analisa_types/{id}", middlewares.SetMiddlewareAuthentication(middlewares.SetMiddlewareAuthentication(s.UpdateSegAnalisaType))).Methods("POST")
 	s.Router.HandleFunc("/seg_analisa_types/{id}", middlewares.SetMiddlewareAuthentication(s.DeleteSegAnalisaType)).Methods("DELETE")

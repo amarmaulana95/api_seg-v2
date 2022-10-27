@@ -553,5 +553,9 @@ func (server *Server) GetSegDashboardEficiency(w http.ResponseWriter, r *http.Re
 	dEfi.Data_a[1] = 100 - dsemethod.Percent_eficiency
 	dEfi.Persen = fmt.Sprintf("%.2f%%", dsemethod.Percent_eficiency)
 
-	responses.JSON(w, http.StatusOK, dEfi)
+	respon := &ResponStatusData{200, "Success", dEfi}
+	responses.JSON(w, http.StatusOK, respon)
+
+	// responses.JSON(w, http.StatusOK, dEfi)
+
 }
