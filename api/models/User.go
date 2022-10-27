@@ -130,13 +130,13 @@ func (u *User) FindUserByID(db *gorm.DB, uid uint32) (*User, error) {
 
 func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
 
-	// To hash the password
 	err := u.BeforeSave()
 	if err != nil {
 		log.Fatal(err)
 	}
 	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
 		map[string]interface{}{
+			"id":        u.ID,
 			"password":  u.Password,
 			"username":  u.Username,
 			"email":     u.Email,
@@ -146,7 +146,6 @@ func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
 	if db.Error != nil {
 		return &User{}, db.Error
 	}
-	// This is the display the updated user
 	err = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&u).Error
 	if err != nil {
 		return &User{}, err

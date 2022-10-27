@@ -16,6 +16,48 @@ import (
 	"github.com/amarmaulana95/api_seg-v2/api/utils/formaterror"
 )
 
+func (server *Server) UpdateSegAnalisaType(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	uid, err := strconv.ParseUint(vars["id"], 10, 32)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+	setype := models.SegAnalisaType{}
+	err = json.Unmarshal(body, &setype)
+	if err != nil {
+		responses.ERROR(w, http.StatusUnprocessableEntity, err)
+		return
+	}
+	// tokenID, err := auth.ExtractTokenID(r)
+
+	if err != nil {
+		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+		return
+	}
+	// if tokenID != uint32(uid) {
+	// 	responses.ERROR(w, http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized)))
+	// 	return
+	// }
+
+	// setype.Prepare() //priper tapi tidak terpalai
+
+	updatedSegAnalisaType, err := setype.UpdateASegAnalisaType(server.DB, uint32(uid))
+	fmt.Println(updatedSegAnalisaType)
+	if err != nil {
+		formattedError := formaterror.FormatError(err.Error())
+		responses.ERROR(w, http.StatusInternalServerError, formattedError)
+		return
+	}
+	responses.JSON(w, http.StatusOK, updatedSegAnalisaType)
+}
+
 func (server *Server) GetSegAnalisaTypes(w http.ResponseWriter, r *http.Request) {
 	if (*r).Method == "OPTIONS" {
 		return
@@ -50,45 +92,6 @@ func (server *Server) GetSegAnalisaType(w http.ResponseWriter, r *http.Request) 
 	respon := &ResponStatusData{200, "Success", setypeGotten}
 	responses.JSON(w, http.StatusOK, respon)
 	// responses.JSON(w, http.StatusOK, setypeGotten)
-}
-
-func (server *Server) UpdateSegAnalisaType(w http.ResponseWriter, r *http.Request) {
-
-	vars := mux.Vars(r)
-	uid, err := strconv.ParseUint(vars["id"], 10, 32)
-	if err != nil {
-		responses.ERROR(w, http.StatusBadRequest, err)
-		return
-	}
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		responses.ERROR(w, http.StatusUnprocessableEntity, err)
-		return
-	}
-	setype := models.SegAnalisaType{}
-	err = json.Unmarshal(body, &setype)
-	if err != nil {
-		responses.ERROR(w, http.StatusUnprocessableEntity, err)
-		return
-	}
-	tokenID, err := auth.ExtractTokenID(r)
-	if err != nil {
-		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
-		return
-	}
-	if tokenID != uint32(uid) {
-		responses.ERROR(w, http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized)))
-		return
-	}
-	setype.Prepare()
-
-	updatedSegAnalisaType, err := setype.UpdateASegAnalisaType(server.DB, uint32(uid))
-	if err != nil {
-		formattedError := formaterror.FormatError(err.Error())
-		responses.ERROR(w, http.StatusInternalServerError, formattedError)
-		return
-	}
-	responses.JSON(w, http.StatusOK, updatedSegAnalisaType)
 }
 
 func (server *Server) DeleteSegAnalisaType(w http.ResponseWriter, r *http.Request) {

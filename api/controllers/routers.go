@@ -10,10 +10,12 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/login", middlewares.SetMiddlewareJSON(s.Login)).Methods("POST")
 
 	//Users routes
-	s.Router.HandleFunc("/users", middlewares.SetMiddlewareJSON(s.CreateUser)).Methods("POST")                                       //OK
+	s.Router.HandleFunc("/users", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.CreateUser))).Methods("POST") //OK
+
 	s.Router.HandleFunc("/users", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.GetUsers))).Methods("GET") // OK
-	s.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareJSON(s.GetUser)).Methods("GET")                                      // PL
-	s.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareJSON(s.UpdateUser))).Methods("PUT")
+	s.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareAuthentication(s.GetUser)).Methods("GET")                            // PL
+	s.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdateUser))).Methods("POST")
+
 	s.Router.HandleFunc("/users/{id}", middlewares.SetMiddlewareAuthentication(s.DeleteUser)).Methods("POST")
 
 	// s.Router.HandleFunc("/register_token", middlewares.SetMiddlewareJSON(s.ValidasiToken)).Methods("GET")
@@ -26,7 +28,9 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/seg_analisa_types", middlewares.SetMiddlewareJSON(s.CreateSegAnalisaType)).Methods("POST")
 	s.Router.HandleFunc("/seg_analisa_types", middlewares.SetMiddlewareJSON(s.GetSegAnalisaTypes)).Methods("GET")
 	s.Router.HandleFunc("/seg_analisa_types/{id}", middlewares.SetMiddlewareJSON(s.GetSegAnalisaType)).Methods("GET")
-	s.Router.HandleFunc("/seg_analisa_types/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareJSON(s.UpdateSegAnalisaType))).Methods("PUT")
+
+	s.Router.HandleFunc("/seg_analisa_types/{id}", middlewares.SetMiddlewareJSON(middlewares.SetMiddlewareAuthentication(s.UpdateSegAnalisaType))).Methods("POST")
+
 	s.Router.HandleFunc("/seg_analisa_types/{id}", middlewares.SetMiddlewareJSON(s.DeleteSegAnalisaType)).Methods("DELETE")
 
 	s.Router.HandleFunc("/analisa_value_enginering", middlewares.SetMiddlewareJSON(s.SegAnalisaValueEngineringAll)).Methods("GET")

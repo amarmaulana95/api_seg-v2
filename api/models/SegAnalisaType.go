@@ -35,7 +35,7 @@ func (satype *SegAnalisaType) SaveSegAnalisaType(db *gorm.DB) (*SegAnalisaType, 
 func (satype *SegAnalisaType) FindAllSegAnalisaTypes(db *gorm.DB) (*[]SegAnalisaType, error) {
 	var err error
 	dsatype := []SegAnalisaType{}
-	err = db.Debug().Model(&SegAnalisaType{}).Limit(100).Find(&dsatype).Error
+	err = db.Debug().Model(&SegAnalisaType{}).Limit(100).Order("id asc").Find(&dsatype).Error
 	if err != nil {
 		return &[]SegAnalisaType{}, err
 	}
@@ -63,6 +63,7 @@ func (satype *SegAnalisaType) UpdateASegAnalisaType(db *gorm.DB, uid uint32) (*S
 			"urutan":      satype.Urutan,
 		},
 	)
+
 	if db.Error != nil {
 		return &SegAnalisaType{}, db.Error
 	}
