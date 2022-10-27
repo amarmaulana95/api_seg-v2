@@ -300,7 +300,7 @@ func (server *Server) SegAnalisaFinanceEngineringAll(w http.ResponseWriter, r *h
 			dAttachment.Id = rAttachment.Id
 			dAttachment.File_name = "file_data"
 			dAttachment.Attachment = rAttachment.File_name
-			dAttachment.Path_file_name = "http://10.14.0.18:9002/open_file?filename=" + rAttachment.File_name
+			dAttachment.Path_file_name = "http://localhost:8080/open_file?filename=" + rAttachment.File_name
 
 			arrAttachment = append(arrAttachment, dAttachment)
 		}
