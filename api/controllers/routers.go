@@ -64,4 +64,18 @@ func (s *Server) initializeRoutes() {
 	s.Router.HandleFunc("/dashboard_total_eficiency", middlewares.SetMiddlewareJSON(s.GetSegDashboardEficiency)).Methods("GET")
 	s.Router.HandleFunc("/dashboard_total_bulanan_analisa", middlewares.SetMiddlewareJSON(s.GetSegDashboardTotalBulananAnalisa)).Methods("GET")
 	s.Router.HandleFunc("/dashboard_total_analisa", middlewares.SetMiddlewareJSON(s.GetSegDashboardTotalAnalisa)).Methods("GET")
+
+	//-----------------------------------------ESTIMATE-----------------------------------------------------------------//
+	s.Router.HandleFunc("/estimate_method", middlewares.SetMiddlewareJSON(s.SegAnalisaMethod)).Methods("GET")                        // SegEstimateMethod q=&id_barang=&id_provinsi=1
+	s.Router.HandleFunc("/estimate_inovasi", middlewares.SetMiddlewareJSON(s.SegAnalisaInovasi)).Methods("GET")                      // SegEstimateInovasi
+	s.Router.HandleFunc("/estimate_value_enginering", middlewares.SetMiddlewareJSON(s.SegAnalisaValueEnginering)).Methods("GET")     // SegEstimateValueENginering
+	s.Router.HandleFunc("/estimate_finance_enginering", middlewares.SetMiddlewareJSON(s.SegAnalisaFinanceENginering)).Methods("GET") // SegEstimateFinanceENginering
+	s.Router.HandleFunc("/estimate_project_boost", middlewares.SetMiddlewareJSON(s.SegAnalisaProjectBoost)).Methods("GET")           // SegEstimateProjectBoost
+
+	s.Router.HandleFunc("/seg_tender_estimate", middlewares.SetMiddlewareAuthentication(s.SegTenderEstimateCalculation)).Methods("POST")
+	s.Router.HandleFunc("/seg_tender_estimate_rating/{id}", middlewares.SetMiddlewareJSON(s.SegTenderEstimateCalculationRating)).Methods("GET")
+	s.Router.HandleFunc("/seg_tender_estimate_rating_calibrate_firts", middlewares.SetMiddlewareJSON(s.SegTenderEstimateCalibrateRatingFirst)).Methods("GET")
+	s.Router.HandleFunc("/seg_tender_estimate_rating_save", middlewares.SetMiddlewareAuthentication(s.SegTenderEstimateResultSave)).Methods("POST")
+	s.Router.HandleFunc("/seg_tender_estimate_delete/{id}", middlewares.SetMiddlewareAuthentication(s.SegTenderEstimateDelete)).Methods("POST")
+
 }
