@@ -1,4 +1,4 @@
-# api_seg
+# Api-SEG
  
 - SEG Is an Innovation system that can recommend the most accurate construction costs. This application already uses an Algorithm to be able to recommend.
 With SEG you get a wide variety of methods, types of estimation, innovation, value engineering, financial engineering.
